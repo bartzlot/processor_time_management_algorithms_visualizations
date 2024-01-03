@@ -38,7 +38,7 @@ def collecting_data_from_file(path: str):
     rr_time_quantum = int(data[4][0])
 
 
-collecting_data_from_file("data2.txt")
+collecting_data_from_file("data.txt")
 
 class FCFSVisualizer:
 
@@ -65,7 +65,7 @@ class FCFSVisualizer:
         self.ax.set_ylim(0, len(self.fcfs_data))
 
         self.ax.hlines(list(range(1,len(self.fcfs_data))), 0, self.whole_time, colors='green', linestyles='dotted')
-        self.ax.xaxis.set_major_locator(MultipleLocator((self.whole_time // 100) + 1))
+        self.ax.xaxis.set_major_locator(MultipleLocator((self.whole_time // 25) + 1))
         self.ax.yaxis.set_major_locator(MultipleLocator(1))
         self.canvas.draw()
         
@@ -98,7 +98,7 @@ class FCFSVisualizer:
                 self.ax.broken_barh([(self.current_time_unit, 1)], (self.row, 1), 
                                     facecolors=(0.5, 0.5, 0.5), edgecolor='yellow', linewidth=1)
                 counter = self.ax.text(0, self.row + 0.5, f"P{current_process['id']}: {self.process_time}", 
-                    ha='center', va='center', color="orange", fontweight='bold', fontsize=30)
+                    ha='center', va='center', color="blue", fontweight='bold', fontsize=10)
 
                 self.canvas.draw()
 
@@ -107,7 +107,7 @@ class FCFSVisualizer:
             else:
 
                 self.ax.text(0, self.row + 0.5, f"P{current_process['id']}: {self.process_time-1}", 
-                    ha='center', va='center', color="orange", fontweight='bold', fontsize=30)
+                    ha='center', va='center', color="blue", fontweight='bold', fontsize=10)
                 self.process_time = 0
                 self.ax.axvline(x=self.current_time_unit, color='purple', linestyle='solid')
 
@@ -123,6 +123,6 @@ class FCFSVisualizer:
             pass
 
 root = tk.Tk()
-root.attributes('-fullscreen', True)
+# root.attributes('-fullscreen', True)
 app = FCFSVisualizer(root, processes_list)
 root.mainloop()
