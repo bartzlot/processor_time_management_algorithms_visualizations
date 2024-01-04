@@ -3,7 +3,6 @@ import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.pyplot import subplots
 from matplotlib.ticker import MultipleLocator
-import time
 
 processes_list = []
 time_quantum = 0
