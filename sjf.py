@@ -36,7 +36,7 @@ def collecting_data_from_file(path: str):
     rr_time_quantum = int(data[4][0])
 
 
-collecting_data_from_file("data.txt")
+collecting_data_from_file("data2.txt")
 
 
 class SJFVisualizer:
@@ -50,12 +50,13 @@ class SJFVisualizer:
         self.completed_processes = []
         self.current_time_unit = 0
         self.current_process_index = 0
-        self.row = 0
-        self.process_time = 1
+        self.process_time_counter = []
 
         self.whole_time = 0
 
         for p in self.sjf_data: self.whole_time += p['burst_time']
+
+        for bt in self.sjf_data: self.process_time_counter.append(bt['burst_time'])
 
         self.fig, self.ax = subplots(figsize=(50,20))
         self.canvas = FigureCanvasTkAgg(self.fig, master)
@@ -67,40 +68,60 @@ class SJFVisualizer:
         self.ax.hlines(list(range(1,len(self.sjf_data))), 0, self.whole_time, colors='green', linestyles='dotted')
         self.ax.xaxis.set_major_locator(MultipleLocator((self.whole_time // 25) + 1))
         self.ax.yaxis.set_major_locator(MultipleLocator(1))
-        # self.canvas.draw()
-        
+        self.canvas.draw()
+
         self.update_chart()
+
 
     def update_chart(self):
 
-        if self.current_time_unit < self.whole_time:
+        if self.current_time_unit <= self.whole_time:
             
-            minimum_burst_time_process_id = 0
+            minimum_burst_time_process_id = 1
             minumim_burst_time = 0
             available_processes = []
 
             for i in range(len(self.sjf_data)):
 
-                if self.sjf_data[i]['arrival_time'] <= self.current_time_unit:
+                if self.sjf_data[i]['arrival_time'] <= self.current_time_unit and self.sjf_data[i]['burst_time'] > 0:
 
                     if i not in available_processes:
                         available_processes.append(i)
-            print(available_processes)
+
             for j, index in enumerate(available_processes):
-                print(minumim_burst_time)
+                
                 if j == 0:
 
                     minumim_burst_time = self.sjf_data[index]['burst_time']
                 
-                if minumim_burst_time > self.sjf_data[index]['burst_time']:
+                if minumim_burst_time > self.sjf_data[index]['burst_time'] and self.sjf_data[index]['burst_time'] > 0 or len(available_processes) == 1:
 
                     minimum_burst_time_process_id = self.sjf_data[index]['id']
                     minumim_burst_time = self.sjf_data[index]['burst_time']
 
-            print(minimum_burst_time_process_id)
-            print(minumim_burst_time)
+            
 
 
+            self.sjf_data[minimum_burst_time_process_id - 1]['burst_time'] = self.sjf_data[minimum_burst_time_process_id - 1]['burst_time'] - 1
+
+            
+
+            self.ax.broken_barh([(self.current_time_unit, 1)], (minimum_burst_time_process_id - 1, 1), 
+                                facecolors=(0.5, 0.5, 0.5), edgecolor='yellow', linewidth=1)
+            
+            counter = self.ax.text(0, minimum_burst_time_process_id - 0.5, f"P{minimum_burst_time_process_id}: {self.process_time_counter[minimum_burst_time_process_id - 1]} ", 
+                ha='center', va='center', color="blue", fontweight='bold', fontsize=10)
+            
+            self.process_time_counter[minimum_burst_time_process_id - 1] = self.process_time_counter[minimum_burst_time_process_id - 1] - 1
+
+            self.canvas.draw()
+            
+            
+            self.current_time_unit += 1
+
+            
+            # # # print(available_processes)
+            # # print(self.sjf_data)
                     
 
 
@@ -108,7 +129,8 @@ class SJFVisualizer:
 
 
 
-            # self.master.after(500, self.update_chart)
+            self.master.after(500, self.update_chart)
+            # counter.remove() TODO
 
         else:
             pass
