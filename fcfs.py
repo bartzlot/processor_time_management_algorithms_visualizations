@@ -41,6 +41,7 @@ collecting_data_from_file("data.txt")
 
 class FCFSVisualizer:
 
+
     def __init__(self, master, data: list):
         
         self.master = master

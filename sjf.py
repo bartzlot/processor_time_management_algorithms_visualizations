@@ -46,10 +46,7 @@ class SJFVisualizer:
         
         self.master = master
         self.sjf_data = sorted(data, key=lambda x: (x['arrival_time']))
-        self.process_queue = []
-        self.completed_processes = []
         self.current_time_unit = 0
-        self.current_process_index = 0
         self.process_time_counter = []
         self.last_process_id = 0
 
@@ -101,7 +98,7 @@ class SJFVisualizer:
             
             self.process_time_counter[minimum_burst_time_process_id - 1] = self.process_time_counter[minimum_burst_time_process_id - 1] - 1
 
-            self.update_counters(minimum_burst_time_process_id)
+            
             self.draw_x_line(minimum_burst_time_process_id)
             self.canvas.draw()
             
@@ -109,6 +106,7 @@ class SJFVisualizer:
             self.last_process_id = minimum_burst_time_process_id
 
             self.master.after(200, self.update_chart)
+            self.update_counters(minimum_burst_time_process_id)
             
         else:
             pass
