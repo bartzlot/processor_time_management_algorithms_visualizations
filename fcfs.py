@@ -1,3 +1,4 @@
+#FCFS (First-Come, First-Served)
 import matplotlib as plt
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -28,7 +29,11 @@ def collecting_data_from_file(path: str):
             "id" : process_id,
             "arrival_time" : int(data[0][i]),
             "burst_time" : int(data[1][i]),
-            "priority_lvl" : int(data[2][i])
+            "priority_lvl" : int(data[2][i]),
+            "turnaround_time": 0,
+            "waiting_time": 0,
+            "response_time": 0,
+            "start_time": 0
         }
 
         processes_list.append(process)
@@ -80,6 +85,10 @@ class FCFSVisualizer:
 
             current_process = self.fcfs_data[self.current_process_index]
 
+            if current_process['start_time'] == 0:
+                current_process['start_time'] = self.current_time_unit
+                current_process['response_time'] = current_process['start_time'] - current_process['arrival_time']
+
             if self.current_process_index == 0:
 
                 burst_time = current_process['burst_time']
@@ -102,9 +111,12 @@ class FCFSVisualizer:
 
                 self.canvas.draw()
 
-
                 self.current_time_unit += 1
+
             else:
+                
+                current_process['turnaround_time'] = self.current_time_unit - current_process['arrival_time']
+                current_process['waiting_time'] = current_process['turnaround_time'] - current_process['burst_time']
 
                 self.ax.text(0, self.row + 0.5, f"P{current_process['id']}: {self.process_time-1}", 
                     ha='center', va='center', color="blue", fontweight='bold', fontsize=10)
@@ -126,3 +138,4 @@ root = tk.Tk()
 # root.attributes('-fullscreen', True)
 app = FCFSVisualizer(root, processes_list)
 root.mainloop()
+print(processes_list)
