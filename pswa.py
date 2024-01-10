@@ -1,3 +1,4 @@
+#PSWA (Priority Scheduling with Aging)
 import matplotlib as plt
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -25,7 +26,11 @@ def collecting_data_from_file(path: str):
             "id" : process_id,
             "arrival_time" : int(data[0][i]),
             "burst_time" : int(data[1][i]),
-            "priority_lvl" : int(data[2][i])
+            "priority_lvl" : int(data[2][i]),
+            "turnaround_time": 0,
+            "waiting_time": 0,
+            "response_time": 0,
+            "start_time": 0
         }
 
         processes_list.append(process)
@@ -36,6 +41,26 @@ def collecting_data_from_file(path: str):
     return time_quantum, rr_time_quantum
 
 time_quantum, rr_time_quantum = collecting_data_from_file("data.txt")
+
+
+def generate_results(processes_list: list):
+    
+    avarage_results = []
+    avarage_turnaround_time = 0
+    avarage_waiting_time = 0
+    avarage_response_time = 0
+
+    for process in processes_list:
+
+        avarage_turnaround_time += process['turnaround_time']
+        avarage_response_time += process['response_time']
+        avarage_waiting_time += process['waiting_time']
+
+    avarage_results.append(round(avarage_turnaround_time/len(processes_list), 2))
+    avarage_results.append(round(avarage_waiting_time/len(processes_list), 2))
+    avarage_results.append(round(avarage_response_time/len(processes_list), 2))
+    
+    return avarage_results
 
 
 class PSWAisualizer:
@@ -83,7 +108,13 @@ class PSWAisualizer:
 
                 if process['burst_time'] == 0: continue
 
+                if process['start_time'] == 0:
 
+                    process['start_time'] = self.current_time_unit
+                    process['response_time'] = process['start_time'] - process['arrival_time']
+
+                    if process['response_time'] < 0:
+                        process ['response_time'] = 0
 
                 process['burst_time'] = process['burst_time'] - 1
                 self.ax.broken_barh([(self.current_time_unit, 1)], (process['id'] - 1, 1), 
@@ -93,11 +124,14 @@ class PSWAisualizer:
                 self.draw_x_line(process['id'])
                 self.update_counters(process['id'])
                 self.current_process_index = process['id']
-                
-                
+
                 break
-            
-            
+
+            for process in self.pswa_data:
+
+                if process['start_time'] != 0 and process['burst_time'] > 0:
+                    process['waiting_time'] = self.current_time_unit - process['arrival_time'] - (process['burst_time'] - 1)
+                    process['turnaround_time'] = self.current_time_unit - process['arrival_time']
             if self.current_time_unit % time_quantum == 0 and self.current_time_unit != 0:
                 
                 self.processes_aging(self.current_process_index)            
@@ -106,7 +140,7 @@ class PSWAisualizer:
 
             self.canvas.draw()
 
-            self.master.after(400, self.update_chart)
+            self.master.after(50, self.update_chart)
             
         else:
             pass
@@ -155,3 +189,7 @@ root = tk.Tk()
 # root.attributes('-fullscreen', True)
 app = PSWAisualizer(root, processes_list)
 root.mainloop()
+
+avarage_results = generate_results(processes_list)
+print(avarage_results)
+
