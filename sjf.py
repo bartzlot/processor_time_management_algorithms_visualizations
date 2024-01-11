@@ -57,7 +57,6 @@ class SJFVisualizer:
         self.last_process_id = 0
         self.burst_times = []
         self.whole_time = 0
-        print(self.sjf_data)
 
         for p in self.sjf_data: self.whole_time += p['burst_time']
 
@@ -83,15 +82,10 @@ class SJFVisualizer:
     def update_chart(self):
         
         if self.current_time_unit <= self.whole_time:
-        # Initialize variables to store the index and minimum burst time
+
             minimum_burst_time_process_index = None
             minumim_burst_time = float('inf')
             available_processes = self.finding_avaliable_processes()
-
-        if len(available_processes) == 0:
-            self.current_time_unit += 1
-            self.master.after(1000, self.update_chart)
-            return
 
         for index in available_processes:
 
@@ -109,14 +103,17 @@ class SJFVisualizer:
             self.update_counters(minimum_burst_time_process_index)
             
 
-            if selected_process['start_time'] == 0:
-                selected_process['start_time'] = self.current_time_unit if self.current_time_unit != 0 else 0
+            if selected_process['start_time'] == 0 and minimum_burst_time_process_index != 0:
+                selected_process['start_time'] = self.current_time_unit
+            
+            elif self.current_time_unit == 0:
+
+                selected_process['start_time'] = 0
 
             selected_process['burst_time'] -= 1
             self.ax.broken_barh([(self.current_time_unit, 1)], (minimum_burst_time_process_index, 1), 
                                 facecolors=(0.5, 0.5, 0.5), edgecolor='yellow', linewidth=1)
             self.process_time_counter[minimum_burst_time_process_index] -= 1
-            
             self.canvas.draw()
 
             if self.last_process_id != minimum_burst_time_process_index:
@@ -125,26 +122,16 @@ class SJFVisualizer:
                 
             self.current_time_unit += 1
 
-
-                
+            if selected_process['burst_time'] == 0:
+                selected_process['completion_time'] = self.current_time_unit
+                selected_process['turnaround_time'] = selected_process['completion_time'] - selected_process['arrival_time']
+                selected_process['waiting_time'] = selected_process['start_time'] - selected_process['arrival_time']
+                selected_process['response_time'] = selected_process['completion_time'] - selected_process['arrival_time']
 
             self.master.after(1, self.update_chart)
+
         else:
             pass
-
-            # for process in self.sjf_data:
-
-            #     if process['burst_time'] == 0:
-
-            #         if process['turnaround_time'] == 0:
-            #             process['turnaround_time'] = self.current_time_unit - process['arrival_time']
-
-            #         if process['response_time'] == 0:
-            #             process['response_time'] = process['start_time'] - process['arrival_time']
-
-            #     else:
-
-            #         process['waiting_time'] += 1   
 
 
     def initialize_counters(self):
@@ -185,9 +172,15 @@ class SJFVisualizer:
         return available_processes
 
 
-root = tk.Tk()
+    def count_metrix(self):
+        print(self.burst_times)
+        for process in enumerate(self.sjf_data):
+            process['turnaround_time'] = process['completion_time'] - process['arrival_time']
+            process['waiting_time'] = process['start_time'] - process['arrival_time']
+            process['response_time'] = process['completion_time'] - process['arrival_time']
 
+root = tk.Tk()
 app = SJFVisualizer(root, processes_list)
 root.mainloop()
-
+print(processes_list)
 SJFResults = ResultsManager(processes_list, 'sjf')
