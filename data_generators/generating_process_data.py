@@ -4,9 +4,9 @@ import pathlib
 def generate_random_data(max_duration=20, max_arrival=20, num_processes=50):
 
     arrival_times = np.random.randint(0, max_arrival + 1, num_processes)
-    arrival_times[0] = 0  # Ensure at least one process has zero arrival time
+    arrival_times[0] = 0 
     durations = np.random.randint(1, max_duration + 1, num_processes)
-    priorities = np.random.randint(0, 11, num_processes)  # Priority range from 0 to 10
+    priorities = np.random.randint(0, 11, num_processes) 
 
     return arrival_times, durations, priorities
 
