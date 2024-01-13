@@ -1,10 +1,13 @@
+#Shortest job first
 import matplotlib as plt
 from results_manager import ResultsManager
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.pyplot import subplots
 from matplotlib.ticker import MultipleLocator
+import pathlib
 
+data_file_path = pathlib.Path(__file__).parent / 'data_generators' / 'cpu_scheduling_data.txt'
 processes_list = []
 time_quantum = 0
 rr_time_quantum = 0
@@ -42,7 +45,7 @@ def collecting_data_from_file(path: str):
     rr_time_quantum = int(data[4][0])
 
 
-collecting_data_from_file("data2.txt")
+collecting_data_from_file(data_file_path)
 
 
 class SJFVisualizer:
@@ -182,5 +185,4 @@ class SJFVisualizer:
 root = tk.Tk()
 app = SJFVisualizer(root, processes_list)
 root.mainloop()
-print(processes_list)
 SJFResults = ResultsManager(processes_list, 'sjf')

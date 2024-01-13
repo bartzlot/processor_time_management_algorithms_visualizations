@@ -1,1 +1,11 @@
-[104.0, 104.0, 85.27]
+{
+    "turnaround_time_m": 102.0,
+    "response_time_m": 102.0,
+    "waiting_time_m": 102.0,
+    "turnaround_time_std": 170.6307697925553,
+    "response_time_std": 163.23250779179986,
+    "waiting_time_std": 163.23250779179986,
+    "avarage_turnaround_time": 165.98,
+    "avarage_response_time": 157.78,
+    "avarage_waiting_time": 157.78
+}

@@ -1,1 +1,11 @@
-[139.13, 122.13, 122.2]
+{
+    "turnaround_time_m": 0.0,
+    "response_time_m": 0.0,
+    "waiting_time_m": 235.0,
+    "turnaround_time_std": 163.262287133312,
+    "response_time_std": 0.0,
+    "waiting_time_std": 162.55842026791478,
+    "avarage_turnaround_time": 260.84,
+    "avarage_response_time": 0.0,
+    "avarage_waiting_time": 249.8
+}

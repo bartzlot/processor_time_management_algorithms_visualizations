@@ -1,9 +1,13 @@
+# Least Frequently Used
 import matplotlib.pyplot as plt
 from results_manager import PageResultsManager
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.pyplot import subplots
 from matplotlib.ticker import MultipleLocator
+import pathlib
+
+data_file_path = pathlib.Path(__file__).parent / 'data_generators' / 'page_replacement_data.txt'
 
 def collecting_data_from_file(path: str):
     data = []
@@ -18,7 +22,7 @@ def collecting_data_from_file(path: str):
 
     return data[1][0], data[0]
 
-frame_quantity, sites = collecting_data_from_file("page_replacement.txt")
+frame_quantity, sites = collecting_data_from_file(data_file_path)
 
 
 class LFUVisualizer:
